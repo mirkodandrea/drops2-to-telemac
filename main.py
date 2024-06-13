@@ -55,7 +55,7 @@ def extract_data_on_bbox(
 
     output_data = [
         (bounds_values[i], *
-         transformer.transform(bounds_lons[i], bounds_lats[i]))
+         transformer.transform(bounds_lats[i], bounds_lons[i]))
         for i in range(len(bounds_lats))
     ]
 
