@@ -86,7 +86,7 @@ def write_file(
         for idx, values in enumerate(all_values):
             n_pixels = len(values)
             formatted_values = format_values(values, shift=shift)
-            f.write(f'{idx}. {dt}. {n_pixels}\n{formatted_values}\n')
+            f.write(f'{idx * dt}. {dt}. {n_pixels}\n{formatted_values}\n')
 
 
 def main(
