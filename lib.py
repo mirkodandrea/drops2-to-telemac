@@ -42,7 +42,7 @@ def extract_data_on_bbox(
     """
     lats = data['latitude'].values
     lons = data['longitude'].values
-    values = data.isel(time=0).values
+    values = data.values
 
     # find the indexes of the data that are within the bounding box
     idx = (lats >= bbox_wgs[1]) & (lats <= bbox_wgs[3]) & (
@@ -87,46 +87,3 @@ def write_file(
             n_pixels = len(values)
             formatted_values = format_values(values, shift=shift)
             f.write(f'{idx * dt}. {dt}. {n_pixels}\n{formatted_values}\n')
-
-
-def main(
-    date_from: str | datetime.datetime,
-    date_to: str | datetime.datetime,
-    output_file_name: str,
-    shift: tuple[float, float] = None
-):
-    """
-    Main function
-    """
-    domain = gpd.read_file('data/Dominio_Idraulica_Debed_38N.shp')
-    buffer = 0.1
-    bbox_wgs = domain.to_crs('epsg:4326').buffer(buffer).total_bounds
-
-    data_id = 'GSMAP'
-    variable = 'hourly_rain_rate'
-
-    dates = coverages.get_dates(data_id, date_from, date_to)
-    dates = np.sort(dates)
-
-    all_values = []
-    for d in dates:
-        print('downloading', d)
-        data = coverages.get_data(data_id, d, variable, level='0')
-        values = extract_data_on_bbox(data[variable], bbox_wgs, domain.crs)
-        all_values.append(values)
-
-    write_file(all_values, HEADER, output_file_name, shift=shift)
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    # add positional args
-    parser.add_argument('date_from', type=str, help='Date from')
-    parser.add_argument('date_to', type=str, help='Date to')
-    parser.add_argument('output_file_name', type=str, help='Output file name')
-    parser.add_argument('--shift', type=float, nargs=2, default=None,
-                        help='Shift the data by x and y')
-    args = parser.parse_args()
-    main(args.date_from, args.date_to, args.output_file_name, args.shift)
-
-# %%

@@ -10,9 +10,11 @@
             "request": "launch",
             "program": "${file}",
             "args": [
-                "202405240000",
-                "202405240100",
-                "data/new.dat",
+                "WRF_SUDAN",
+                "RAINNC",
+                "-",
+                "202407110000",
+                "test.dat"
             ],
             "console": "integratedTerminal"
         }
