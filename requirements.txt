@@ -1,0 +1,1 @@
+drops2 @ git+https://github.com/CIMAFoundation/drops2.git@v0.7.0
