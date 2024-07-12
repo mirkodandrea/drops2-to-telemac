@@ -16,7 +16,7 @@ drops2.set_credentials(
 )
 
 
-def main(
+def process(
     data_id: str,
     variable: str,
     level: str,
@@ -27,7 +27,16 @@ def main(
     shift: tuple[float, float] = None
 ):
     """
-    Main function
+    Download and processes observations from DDS and extract it on a domain for telemac.
+
+    :param data_id: DDS dataid
+    :param variable: Variable
+    :param level: level
+    :param date_from: observations date from
+    :param date_to: observations date to
+    :param domain_path: path to the domain shapefile
+    :param output_file_name: output file name
+    :param shift: shift the data by x and y (default: None)
     """
     domain = gpd.read_file(domain_path)
     buffer = 0.1
@@ -47,7 +56,7 @@ def main(
     write_file(all_values, HEADER, output_file_name, shift=shift)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     # add positional args
     parser.add_argument('data_id', type=str, help='Data id')
@@ -60,7 +69,7 @@ if __name__ == '__main__':
     parser.add_argument('--shift', type=float, nargs=2, default=None,
                         help='Shift the data by x and y')
     args = parser.parse_args()
-    main(
+    process(
         args.data_id,
         args.variable,
         args.level,
@@ -70,3 +79,7 @@ if __name__ == '__main__':
         args.output_file_name,
         args.shift
     )
+
+
+if __name__ == '__main__':
+    main()
