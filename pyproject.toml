@@ -1,0 +1,12 @@
+[project]
+name = "telemac"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "drops2",
+]
+
+[tool.uv.sources]
+drops2 = { git = "https://github.com/CIMAFoundation/drops2.git", rev = "v0.7.0" }
