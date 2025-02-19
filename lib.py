@@ -18,17 +18,7 @@ drops2.set_credentials(
 
 
 HEADER = '''
-# Radardaten
 #
-# Regeln fuer Kommentare
-# -	Kommentarzeile < 72 Zeichen
-# -	Die Kommentarzeile enth�lt ein #.
-# -	Es k�nnen beliebig viele Kommentarzeilen aufeinander folgen.
-# -	Die Kommentarzeile steht vor der Datenzeile <t,dt,np> ; d.h. es k�nnen mehre Kommentare im Datensatz verstreut liegen.
-# -	Vor oder im Datenblock <x,y,N> darf kein Kommentar stehen.
-#
-# Zeile <t,dt,np>
-# Block mit np-Zeilen <x,y,N> ; x,y in [m] ; N in [mm]
 '''
 
 
@@ -62,18 +52,6 @@ def extract_data_on_bbox(
     return output_data
 
 
-def format_values(data: list[tuple], shift: tuple[float, float] = None) -> str:
-    """
-    Format the data to the required format
-    """
-    if shift is None:
-        shift = (0, 0)
-
-    data_str = '\n'.join(
-        [f'{x[1] - shift[0]:.0f}. {x[2] - shift[1]:.0f}. {x[0]:.0f}.' for x in data])
-    return data_str
-
-
 def write_file(
     all_values: list[list[tuple]],
     header: str,
@@ -81,9 +59,17 @@ def write_file(
     shift: tuple[float, float] = None,
     dt: int = 3600
 ):
+    if shift is None:
+        shift = (0, 0)
+
     with open(filename, 'w') as f:
         f.write(header)
+        first = all_values[0]
+        n_times = len(all_values)
+        n_pixels = len(first)
+        f.write(f'{n_pixels},{n_times}\n')
+        for _v, x, y in first:
+            f.write(f'{(x- shift[0]):.0f},{(y- shift[1]):.0f}\n')
         for idx, values in enumerate(all_values):
-            n_pixels = len(values)
-            formatted_values = format_values(values, shift=shift)
-            f.write(f'{idx * dt}. {dt}. {n_pixels}\n{formatted_values}\n')
+            formatted_values = ','.join([f'{v[0]:.2f}' for v in values])
+            f.write(f'{idx * dt},{formatted_values}\n')

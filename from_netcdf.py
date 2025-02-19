@@ -110,4 +110,4 @@ for f in files:
     values = extract_data_on_bbox(data[variable], bbox_wgs, domain.crs)
     all_values.append(values)
 
-write_file(all_values, HEADER, 'test.dat', shift=shift)
+write_file(all_values, HEADER, 'test.txt', shift=shift)
